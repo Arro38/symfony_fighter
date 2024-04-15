@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Champion;
 use App\Entity\User;
+use App\Entity\UserChampion;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -58,8 +60,24 @@ class AuthController extends AbstractController
         $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
         $user->setUsername($username);
         $user->setRoles(['ROLE_USER']);
-
         $em->persist($user);
+
+
+        // select a random champion
+        $champions = $em
+            ->getRepository(Champion::class)
+            ->findAll();
+        $champion = $champions[array_rand($champions)];
+        $pv = random_int(20, $champion->getPv());
+        $power = random_int(1, $champion->getPower());
+
+        // Attribute the user to the champion
+        $userChampion = new UserChampion();
+        $userChampion->setUser($user);
+        $userChampion->setChampion($champion);
+        $userChampion->setPv($pv);
+        $userChampion->setPower($power);
+        $em->persist($userChampion);
         $em->flush();
 
         return new JsonResponse(['message' => 'User created'], 201);

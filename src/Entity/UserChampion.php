@@ -21,6 +21,12 @@ class UserChampion
     #[ORM\JoinColumn(nullable: false)]
     private ?Champion $champion = null;
 
+    #[ORM\Column]
+    private ?int $pv = null;
+
+    #[ORM\Column]
+    private ?int $power = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +52,30 @@ class UserChampion
     public function setChampion(?Champion $champion): static
     {
         $this->champion = $champion;
+
+        return $this;
+    }
+
+    public function getPv(): ?int
+    {
+        return $this->pv;
+    }
+
+    public function setPv(int $pv): static
+    {
+        $this->pv = $pv;
+
+        return $this;
+    }
+
+    public function getPower(): ?int
+    {
+        return $this->power;
+    }
+
+    public function setPower(int $power): static
+    {
+        $this->power = $power;
 
         return $this;
     }
